@@ -779,4 +779,338 @@ window.sendPicks = async (roundId) => {
    ========================================== */
 
 $('loginBtn').onclick = async () => {
-  msg('loginMsg',
+  msg('loginMsg','');
+
+  const {error} = await db.auth.signInWithPassword({
+    email:$('email').value,
+    password:$('password').value
+  });
+
+  if(error) {
+    msg('loginMsg',error.message);
+    return;
+  }
+
+  await adminStart();
+};
+
+$('logoutBtn').onclick = async () => {
+  await db.auth.signOut();
+  location.reload();
+};
+
+/* ==========================================
+   CRIAR RODADA
+   ========================================== */
+
+$('createRound').onclick = async () => {
+  const title = $('roundTitle').value.trim();
+
+  if(!title) {
+    msg('roundMsg','Informe o nome da rodada.');
+    return;
+  }
+
+  const {error} = await db
+    .from('rounds')
+    .insert({
+      title,
+      status:$('roundStatus').value,
+      closes_at:$('closesAt').value
+        ? new Date($('closesAt').value).toISOString()
+        : null
+    });
+
+  if(error) {
+    msg('roundMsg',error.message);
+  } else {
+    msg('roundMsg','Rodada criada com sucesso!',true);
+    $('roundTitle').value = '';
+    await loadRounds();
+  }
+};
+
+/* ==========================================
+   CADASTRAR OS DEZ JOGOS
+   ========================================== */
+
+$('saveMatches').onclick = async () => {
+  const rid = $('matchRound').value;
+
+  if(!rid) {
+    msg('matchMsg','Cadastre uma rodada primeiro.');
+    return;
+  }
+
+  const rows = [];
+
+  for(let i=0;i<10;i++) {
+    const home = $('home'+i).value.trim();
+    const away = $('away'+i).value.trim();
+
+    if(!home || !away) {
+      msg('matchMsg','Preencha os dois times dos dez jogos.');
+      return;
+    }
+
+    rows.push({
+      round_id:rid,
+      match_number:i+1,
+      home_team:home,
+      away_team:away,
+      kickoff_at:$('kick'+i).value
+        ? new Date($('kick'+i).value).toISOString()
+        : null
+    });
+  }
+
+  const {error} = await db.from('matches').insert(rows);
+
+  if(error) {
+    msg('matchMsg',error.message);
+  } else {
+    msg('matchMsg','Os dez jogos foram cadastrados!',true);
+    matchForm();
+    await loadMatches();
+  }
+};
+
+/* ==========================================
+   CADASTRAR PARTICIPANTE E GERAR LINK
+   ========================================== */
+
+$('createPerson').onclick = async () => {
+  const name = $('personName').value.trim();
+
+  if(!name) {
+    msg('personMsg','Informe o nome.');
+    return;
+  }
+
+  const {data,error} = await db.rpc(
+    'create_participant_with_link',
+    {p_display_name:name}
+  );
+
+  if(error) {
+    msg('personMsg',error.message);
+    return;
+  }
+
+  const row = Array.isArray(data) ? data[0] : data;
+
+  const link =
+    location.origin +
+    location.pathname +
+    '?token=' +
+    encodeURIComponent(row.access_token);
+
+  msg(
+    'personMsg',
+    'Participante criado. Copie e guarde o link agora; o token não será exibido novamente.',
+    true
+  );
+
+  $('newLink').innerHTML = `
+    <div class="linkbox">${esc(link)}</div>
+    <button onclick="copyLink()">Copiar link</button>
+  `;
+
+  window.generatedLink = link;
+  $('personName').value = '';
+
+  await loadPeople();
+};
+
+window.copyLink = async () => {
+  try {
+    await navigator.clipboard.writeText(window.generatedLink);
+    alert('Link copiado!');
+  } catch(e) {
+    prompt('Copie o link:',window.generatedLink);
+  }
+};
+
+/* ==========================================
+   CONSULTAR PALPITES
+   ========================================== */
+
+$('loadPred').onclick = async () => {
+  const rid = $('predRound').value;
+
+  if(!rid) return;
+
+  const {data,error} = await db
+    .from('predictions')
+    .select(`
+      id,
+      participant_id,
+      match_id,
+      home_goals,
+      away_goals,
+      participants(display_name),
+      matches!inner(match_number,home_team,away_team,round_id)
+    `)
+    .eq('matches.round_id',rid)
+    .order('match_id');
+
+  if(error) {
+    $('predictions').textContent = error.message;
+    return;
+  }
+
+  csvRows = data || [];
+
+  $('predictions').innerHTML = csvRows.length
+    ? `<table>
+        <thead>
+          <tr>
+            <th>Participante</th>
+            <th>Jogo</th>
+            <th>Palpite</th>
+            <th>Salvar</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${csvRows.map(p=>`
+            <tr>
+              <td>${esc(p.participants?.display_name)}</td>
+              <td>
+                ${esc(p.matches?.home_team)}
+                ×
+                ${esc(p.matches?.away_team)}
+              </td>
+              <td>
+                <div style="display:flex;gap:5px">
+                  <input
+                    style="width:55px"
+                    type="number"
+                    min="0"
+                    max="99"
+                    id="ph_${p.id}"
+                    value="${p.home_goals}"
+                  >
+                  <input
+                    style="width:55px"
+                    type="number"
+                    min="0"
+                    max="99"
+                    id="pa_${p.id}"
+                    value="${p.away_goals}"
+                  >
+                </div>
+              </td>
+              <td>
+                <button onclick="savePrediction('${p.id}')">Salvar</button>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>`
+    : '<p class="muted">Ainda não há palpites enviados nesta rodada.</p>';
+};
+
+/* ==========================================
+   EDITAR PALPITE COMO ADMINISTRADOR
+   ========================================== */
+
+window.savePrediction = async (id) => {
+  const h = Number($('ph_'+id).value);
+  const a = Number($('pa_'+id).value);
+
+  if(
+    !Number.isInteger(h) ||
+    !Number.isInteger(a) ||
+    h<0 || a<0 || h>99 || a>99
+  ) {
+    alert('Placar inválido.');
+    return;
+  }
+
+  const {error} = await db
+    .from('predictions')
+    .update({
+      home_goals:h,
+      away_goals:a,
+      updated_at:new Date().toISOString()
+    })
+    .eq('id',id);
+
+  if(error) alert(error.message);
+  else alert('Palpite atualizado!');
+};
+
+/* ==========================================
+   EXPORTAR PALPITES PARA EXCEL
+   ========================================== */
+
+$('exportCsv').onclick = () => {
+  if(!csvRows.length) {
+    alert('Consulte uma rodada com palpites primeiro.');
+    return;
+  }
+
+  const lines = [
+    [
+      'Participante',
+      'Jogo',
+      'Mandante',
+      'Gols mandante',
+      'Visitante',
+      'Gols visitante'
+    ],
+    ...csvRows.map(p=>[
+      p.participants?.display_name,
+      p.matches?.match_number,
+      p.matches?.home_team,
+      p.home_goals,
+      p.matches?.away_team,
+      p.away_goals
+    ])
+  ];
+
+  const csv = '\ufeff' + lines.map(r=>
+    r.map(v=>
+      '"'+String(v??'').replace(/"/g,'""')+'"'
+    ).join(';')
+  ).join('\r\n');
+
+  const blob = new Blob(
+    [csv],
+    {type:'text/csv;charset=utf-8;'}
+  );
+
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'palpites-bolao.csv';
+  a.click();
+
+  URL.revokeObjectURL(a.href);
+};
+
+/* ==========================================
+   ABAS DO PAINEL
+   ========================================== */
+
+document.querySelectorAll('.tab').forEach(b=>{
+  b.onclick = () => {
+    document.querySelectorAll('.tab').forEach(x=>
+      x.classList.toggle('active',x===b)
+    );
+
+    ['roundTab','peopleTab','predTab'].forEach(id=>
+      $(id).classList.toggle('hidden',id!==b.dataset.tab)
+    );
+  };
+});
+
+/* ==========================================
+   INICIAR
+   ========================================== */
+
+matchForm();
+boot();
+
+</script>
+</body>
+</html>
