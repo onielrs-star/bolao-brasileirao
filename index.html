@@ -120,22 +120,12 @@ th { color:var(--muted); }
   margin-top:8px;
 }
 hr { border:0; border-top:1px solid var(--line); margin:20px 0; }
-.match-edit {
-  border:1px solid var(--line);
-  border-radius:10px;
-  padding:12px;
-  margin:12px 0;
-  background:#fff;
-}
-.match-edit .row { align-items:end; }
-.match-edit label { margin-top:4px; }
 @media(max-width:520px) {
   .card { padding:14px; }
   .match { grid-template-columns:minmax(0,1fr) 46px 12px 46px minmax(0,1fr); gap:5px; }
   .score { width:46px!important; }
   .team { font-size:12px; }
   h1 { font-size:21px; }
-  .match-edit .row>* { min-width:100%; }
   table { font-size:12px; }
   th,td { padding:6px; }
 }
@@ -243,12 +233,6 @@ hr { border:0; border-top:1px solid var(--line); margin:20px 0; }
 
     <hr>
 
-
-<div id="matchList" class="hidden"></div>
-    
-
-    <hr>
-
     <h2>Rodadas cadastradas</h2>
     <div id="roundList"></div>
   </section>
@@ -317,17 +301,6 @@ let roundsCache = [];
 let csvRows = [];
 let participantRounds = [];
 
-/* Converte data do banco para o formato do campo datetime-local */
-function toLocalInput(value) {
-  if(!value) return '';
-
-  const date = new Date(value);
-  const offset = date.getTimezoneOffset();
-  const local = new Date(date.getTime() - offset * 60000);
-
-  return local.toISOString().slice(0,16);
-}
-
 /* ==========================================
    FORMULÁRIO DOS DEZ JOGOS
    ========================================== */
@@ -344,10 +317,6 @@ function matchForm() {
         <div>
           <label>Visitante</label>
           <input type="text" id="away${i}" placeholder="Time visitante">
-        </div>
-        <div>
-          <label>Horário (opcional)</label>
-          <input type="datetime-local" id="kick${i}">
         </div>
       </div>
     `
@@ -405,10 +374,6 @@ async function loadRounds() {
       </div>
     `).join('')
     : '<p class="muted">Nenhuma rodada cadastrada.</p>';
-
-  if($('matchRound').value) {
-    await loadMatches();
-  }
 }
 
 window.setRoundStatus = async (id,status) => {
@@ -420,118 +385,6 @@ window.setRoundStatus = async (id,status) => {
   if(error) alert(error.message);
   else await loadRounds();
 };
-
-/* ==========================================
-   NOVA FUNÇÃO: LISTAR JOGOS DA RODADA
-   ========================================== */
-
-async function loadMatches() {
-  const rid = $('matchRound').value;
-
-  if(!rid) {
-    $('matchList').innerHTML =
-      '<p class="muted">Selecione uma rodada.</p>';
-    return;
-  }
-
-  $('matchList').innerHTML =
-    '<p class="muted">Carregando jogos...</p>';
-
-  const {data,error} = await db
-    .from('matches')
-    .select('id,match_number,home_team,away_team,kickoff_at')
-    .eq('round_id',rid)
-    .order('match_number',{ascending:true});
-
-  if(error) {
-    $('matchList').innerHTML =
-      `<p class="error">${esc(error.message)}</p>`;
-    return;
-  }
-
-  if(!data || !data.length) {
-    $('matchList').innerHTML =
-      '<p class="muted">Ainda não há jogos cadastrados nesta rodada.</p>';
-    return;
-  }
-
-  $('matchList').innerHTML = `
-    <p class="success">${data.length} jogo(s) encontrado(s).</p>
-    ${data.map(m=>`
-      <div class="match-edit">
-        <h3>Jogo ${m.match_number}</h3>
-
-        <div class="row">
-          <div>
-            <label>Mandante</label>
-            <input
-              type="text"
-              id="editHome_${m.id}"
-              value="${esc(m.home_team)}"
-            >
-          </div>
-
-          <div>
-            <label>Visitante</label>
-            <input
-              type="text"
-              id="editAway_${m.id}"
-              value="${esc(m.away_team)}"
-            >
-          </div>
-        </div>
-
-        <label>Data e horário</label>
-        <input
-          type="datetime-local"
-          id="editKick_${m.id}"
-          value="${toLocalInput(m.kickoff_at)}"
-        >
-
-        <button onclick="saveMatch('${m.id}')">
-          Salvar alterações
-        </button>
-      </div>
-    `).join('')}
-  `;
-}
-
-/* ==========================================
-   NOVA FUNÇÃO: SALVAR EDIÇÃO DE JOGO
-   ========================================== */
-
-window.saveMatch = async (id) => {
-  const home = $('editHome_'+id).value.trim();
-  const away = $('editAway_'+id).value.trim();
-  const kick = $('editKick_'+id).value;
-
-  if(!home || !away) {
-    alert('Preencha o nome dos dois times.');
-    return;
-  }
-
-  const {error} = await db
-    .from('matches')
-    .update({
-      home_team:home,
-      away_team:away,
-      kickoff_at:kick
-        ? new Date(kick).toISOString()
-        : null
-    })
-    .eq('id',id);
-
-  if(error) {
-    alert('Não foi possível atualizar o jogo: '+error.message);
-    return;
-  }
-
-  alert('Jogo atualizado com sucesso!');
-  await loadMatches();
-};
-
-/* Atualiza a lista quando outra rodada for selecionada */
-$('matchRound').addEventListener('change',loadMatches);
 
 /* ==========================================
    CARREGAR PARTICIPANTES
@@ -852,10 +705,7 @@ $('saveMatches').onclick = async () => {
       round_id:rid,
       match_number:i+1,
       home_team:home,
-      away_team:away,
-      kickoff_at:$('kick'+i).value
-        ? new Date($('kick'+i).value).toISOString()
-        : null
+      away_team:away
     });
   }
 
@@ -866,7 +716,6 @@ $('saveMatches').onclick = async () => {
   } else {
     msg('matchMsg','Os dez jogos foram cadastrados!',true);
     matchForm();
-    await loadMatches();
   }
 };
 
@@ -1109,3 +958,4 @@ boot();
 </script>
 </body>
 </html>
+
