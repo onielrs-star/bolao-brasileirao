@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Bolão do Brasileirão</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -60,15 +60,116 @@ hr { border:0; border-top:1px solid var(--line); margin:20px 0; }
 .check-item { display:flex; align-items:center; gap:8px; background:#f8fafc; padding:9px; border:1px solid var(--line); border-radius:8px; }
 .check-item input { width:auto; }
 .logo-preview { width:42px; height:42px; object-fit:contain; vertical-align:middle; margin-right:8px; }
-@media(max-width:520px) {
-  .card { padding:14px; }
-  .match { grid-template-columns:minmax(0,1fr) 46px 12px 46px minmax(0,1fr); gap:5px; }
-  .score { width:46px!important; }
-  .team { font-size:12px; gap:4px; }
-  .team-logo { width:22px; height:22px; flex-basis:22px; }
+/* ==========================================
+   EXPERIÊNCIA RESPONSIVA — CELULAR E TABLET
+   ========================================== */
+html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; }
+body { min-width:320px; }
+button, input, select { touch-action:manipulation; }
+button, .tab { min-height:44px; }
+input, select { min-height:44px; }
+button:focus-visible, input:focus-visible, select:focus-visible {
+  outline:3px solid #80b7ed; outline-offset:2px;
+}
+img { max-width:100%; }
+
+/* Navegação administrativa pode ser deslizada no celular */
+.admin-nav { overflow-x:auto; flex-wrap:nowrap; padding:2px 1px 8px; -webkit-overflow-scrolling:touch; scrollbar-width:thin; }
+.admin-nav .tab { flex:0 0 auto; white-space:nowrap; }
+
+/* Listas e tabelas não podem estourar a largura da tela */
+.table-wrap { width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+table { min-width:560px; }
+.team-admin { flex-wrap:wrap; }
+.team-admin .team-info { flex:1 1 150px; }
+
+/* Cartões dos confrontos na área do participante */
+.participant-round { scroll-margin-top:12px; }
+.participant-round h2 { line-height:1.25; }
+.participant-round .round-meta { margin:0 0 12px; }
+.match { min-width:0; }
+.match .team { overflow:hidden; }
+.match .team-name { min-width:0; }
+.participant-submit { width:100%; min-height:50px; font-size:16px; margin:16px 0 0; }
+
+@media(max-width:700px) {
+  header { padding:18px 14px; }
+  main { padding:14px 10px calc(28px + env(safe-area-inset-bottom)); }
+  .wrap { padding:0 2px; }
+  .card { padding:15px; border-radius:12px; margin-bottom:12px; }
+  .row { display:flex; flex-direction:column; gap:4px; }
+  .row > * { width:100%; min-width:0; flex:1 1 auto; }
+  nav.admin-nav { gap:7px; margin:0 -2px 12px; }
+  nav.admin-nav button { padding:10px 13px; font-size:14px; }
+  .matchInputs .row, #matchInputs .row { gap:0; padding:9px 0; border-bottom:1px solid var(--line); }
+  #matchInputs label { margin-top:7px; }
+  #matchInputs select { font-size:16px; }
+  .participant-round { padding:14px 12px; }
+  .participant-round .match {
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    grid-template-areas:"home away" "homeScore awayScore";
+    gap:8px 12px;
+    align-items:center;
+    padding:13px 0;
+    margin:0;
+    border-bottom:1px solid var(--line);
+  }
+  .participant-round .match .team:first-child {
+    grid-area:home; justify-content:flex-start; text-align:left;
+    font-size:13px; line-height:1.25; min-height:34px;
+  }
+  .participant-round .match .team:last-child {
+    grid-area:away; justify-content:flex-end; text-align:right;
+    font-size:13px; line-height:1.25; min-height:34px;
+  }
+  .participant-round .match .score:nth-child(2) {
+    grid-area:homeScore; width:100%!important; max-width:none;
+    min-height:48px; font-size:20px; font-weight:700;
+    border-radius:10px; padding:8px!important; background:#f8fafc;
+  }
+  .participant-round .match .vs { display:none; }
+  .participant-round .match .score:nth-child(4) {
+    grid-area:awayScore; width:100%!important; max-width:none;
+    min-height:48px; font-size:20px; font-weight:700;
+    border-radius:10px; padding:8px!important; background:#f8fafc;
+  }
+  .participant-round .team-logo { width:26px; height:26px; flex:0 0 26px; }
+  .participant-submit { position:sticky; bottom:calc(10px + env(safe-area-inset-bottom)); z-index:5; box-shadow:0 4px 14px #102a4330; }
+  #roundList .notice { padding:12px; }
+  #roundList button { margin:5px 4px 0 0; }
+  .team-admin { display:grid; grid-template-columns:42px minmax(0,1fr); gap:8px; padding:12px 0; }
+  .team-admin img { width:38px; height:38px; }
+  .team-admin .team-info { grid-column:2; }
+  .team-admin button { width:100%; margin:0; grid-column:1 / -1; }
+  .check-grid { grid-template-columns:1fr; }
+  .check-item { min-height:48px; }
+  #peopleList table, #predictions table { display:block; width:100%; min-width:0; overflow-x:auto; white-space:normal; }
+  #peopleList th, #peopleList td, #predictions th, #predictions td { min-width:92px; }
+  #predictions td:first-child { min-width:125px; }
+  #predictions td:nth-child(2) { min-width:145px; }
+  #predictions button { min-width:72px; }
+  #exportCsv { width:100%; }
+  #loadPred { width:100%; }
+  #roundTab > button, #peopleTab > button, #seasonTab > button, #teamsTab > button { max-width:100%; }
   h1 { font-size:21px; }
-  table { font-size:12px; }
-  th,td { padding:6px; }
+  h2 { font-size:18px; }
+  label { font-size:14px; }
+}
+
+@media(max-width:380px) {
+  main { padding-left:7px; padding-right:7px; }
+  .card { padding:12px 10px; }
+  .participant-round .match { gap:7px 8px; }
+  .participant-round .match .team:first-child,
+  .participant-round .match .team:last-child { font-size:12px; }
+  .participant-round .team-logo { width:23px; height:23px; flex-basis:23px; }
+  .pill { font-size:11px; }
+}
+
+@media(min-width:701px) and (max-width:900px) {
+  main { padding-left:18px; padding-right:18px; }
+  .card { padding:16px; }
 }
 </style>
 </head>
@@ -104,7 +205,7 @@ hr { border:0; border-top:1px solid var(--line); margin:20px 0; }
       <div style="text-align:right"><button class="secondary" id="logoutBtn">Sair</button></div>
     </div>
   </div>
-  <nav>
+  <nav class="admin-nav">
     <button class="tab active" data-tab="roundTab">Rodadas e jogos</button>
     <button class="tab" data-tab="peopleTab">Participantes</button>
     <button class="tab" data-tab="predTab">Palpites</button>
@@ -440,18 +541,18 @@ async function boot() {
       participantRounds=data.rounds||[];
       if(!participantRounds.length) { $('rounds').innerHTML='<div class="card">Não há rodadas abertas no momento.</div>'; return; }
       $('rounds').innerHTML=participantRounds.map(r=>`
-        <div class="card"><h2>${esc(r.title)}</h2>
-          <p class="muted">${r.closes_at?'Encerramento: '+new Date(r.closes_at).toLocaleString('pt-BR'):''}</p>
+        <div class="card participant-round"><h2>${esc(r.title)}</h2>
+          <p class="muted round-meta">${r.closes_at?'Encerramento: '+new Date(r.closes_at).toLocaleString('pt-BR'):''}</p>
           ${r.submitted?'<p class="success">Seus palpites já foram enviados nesta rodada.</p>':''}
           <div>${(r.matches||[]).map(m=>`
             <div class="match">
               <div class="team">${logoHtml(m.home_logo_url,m.home_team)}<span class="team-name">${esc(m.home_team)}</span></div>
-              <input class="score" type="number" min="0" max="99" inputmode="numeric" id="h_${m.id}" ${r.submitted?'disabled':''}>
+              <input class="score" type="number" min="0" max="99" inputmode="numeric" pattern="[0-9]*" aria-label="Gols do ${esc(m.home_team)}" id="h_${m.id}" ${r.submitted?'disabled':''}>
               <div class="vs">×</div>
-              <input class="score" type="number" min="0" max="99" inputmode="numeric" id="a_${m.id}" ${r.submitted?'disabled':''}>
+              <input class="score" type="number" min="0" max="99" inputmode="numeric" pattern="[0-9]*" aria-label="Gols do ${esc(m.away_team)}" id="a_${m.id}" ${r.submitted?'disabled':''}>
               <div class="team">${logoHtml(m.away_logo_url,m.away_team)}<span class="team-name">${esc(m.away_team)}</span></div>
             </div>`).join('')}</div>
-          ${r.matches?.length===10&&!r.submitted?`<button onclick="sendPicks('${r.id}')">Enviar meus palpites</button>`:''}
+          ${r.matches?.length===10&&!r.submitted?`<button class="participant-submit" onclick="sendPicks('${r.id}')">Enviar meus palpites</button>`:''}
         </div>`).join('');
     } catch(e) {
       hide('loading'); show('participant');
