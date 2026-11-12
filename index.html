@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -8,67 +7,25 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
-  --blue:#123d70;
-  --blue2:#1d5b96;
-  --bg:#f3f6fa;
-  --ink:#182433;
-  --muted:#64748b;
-  --line:#dce4ed;
-  --green:#168653;
-  --red:#b42318;
+  --blue:#123d70; --blue2:#1d5b96; --bg:#f3f6fa; --ink:#182433;
+  --muted:#64748b; --line:#dce4ed; --green:#168653; --red:#b42318;
 }
 * { box-sizing:border-box; }
-body {
-  margin:0;
-  background:var(--bg);
-  color:var(--ink);
-  font:16px/1.45 system-ui,Arial,sans-serif;
-}
-header {
-  background:linear-gradient(120deg,var(--blue),var(--blue2));
-  color:white;
-  padding:22px 16px;
-}
+body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.45 system-ui,Arial,sans-serif; }
+header { background:linear-gradient(120deg,var(--blue),var(--blue2)); color:white; padding:22px 16px; }
 .wrap,main { max-width:980px; margin:auto; }
 h1 { font-size:23px; margin:0 0 4px; }
 header p { margin:0; opacity:.9; }
 main { padding:20px 14px 48px; }
-.card {
-  background:white;
-  border:1px solid var(--line);
-  border-radius:14px;
-  padding:18px;
-  margin-bottom:16px;
-  box-shadow:0 3px 12px #102a4308;
-}
+.card { background:white; border:1px solid var(--line); border-radius:14px; padding:18px; margin-bottom:16px; box-shadow:0 3px 12px #102a4308; }
 h2 { font-size:19px; margin:0 0 14px; color:var(--blue); }
 h3 { font-size:16px; margin:0 0 10px; }
-label {
-  display:block;
-  font-weight:600;
-  font-size:14px;
-  margin:10px 0 5px;
-}
+label { display:block; font-weight:600; font-size:14px; margin:10px 0 5px; }
 input,select,button { font:inherit; }
-input[type=text],input[type=email],input[type=password],
-input[type=datetime-local],input[type=number],select {
-  width:100%;
-  border:1px solid #cbd5e1;
-  border-radius:9px;
-  padding:11px;
-  background:white;
-  color:var(--ink);
+input[type=text],input[type=email],input[type=password],input[type=datetime-local],input[type=number],input[type=file],select {
+  width:100%; border:1px solid #cbd5e1; border-radius:9px; padding:11px; background:white; color:var(--ink);
 }
-button {
-  border:0;
-  border-radius:9px;
-  padding:11px 15px;
-  background:var(--blue2);
-  color:white;
-  font-weight:650;
-  cursor:pointer;
-  margin:6px 5px 0 0;
-}
+button { border:0; border-radius:9px; padding:11px 15px; background:var(--blue2); color:white; font-weight:650; cursor:pointer; margin:6px 5px 0 0; }
 button.secondary { background:#e8eef5; color:var(--blue); }
 button.danger { background:#a93226; }
 button:disabled { opacity:.5; cursor:not-allowed; }
@@ -79,52 +36,36 @@ small,.muted { color:var(--muted); }
 .notice { padding:12px; border-radius:9px; background:#eef5fc; margin:10px 0; }
 .success { color:var(--green); font-weight:650; }
 .error { color:var(--red); font-weight:650; }
-.match {
-  display:grid;
-  grid-template-columns:minmax(0,1fr) 58px 16px 58px minmax(0,1fr);
-  align-items:center;
-  gap:7px;
-  padding:12px 0;
-  border-bottom:1px solid var(--line);
-}
-.team { font-weight:600; font-size:14px; }
-.team:last-child { text-align:right; }
+.match { display:grid; grid-template-columns:minmax(0,1fr) 58px 16px 58px minmax(0,1fr); align-items:center; gap:7px; padding:12px 0; border-bottom:1px solid var(--line); }
+.team { font-weight:600; font-size:14px; display:flex; align-items:center; gap:7px; min-width:0; }
+.team:last-child { justify-content:flex-end; text-align:right; }
+.team-name { overflow-wrap:anywhere; }
+.team-logo { width:28px; height:28px; object-fit:contain; flex:0 0 28px; }
 .score { width:58px!important; text-align:center; padding:10px 4px!important; }
 .vs { text-align:center; color:var(--muted); }
-.pill {
-  display:inline-block;
-  border-radius:99px;
-  background:#e8eef5;
-  color:var(--blue);
-  padding:4px 9px;
-  font-size:12px;
-  font-weight:700;
-}
+.pill { display:inline-block; border-radius:99px; background:#e8eef5; color:var(--blue); padding:4px 9px; font-size:12px; font-weight:700; }
 nav { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
 nav button { margin:0; }
 .tab { background:#e8eef5; color:var(--blue); }
 .tab.active { background:var(--blue2); color:white; }
 table { width:100%; border-collapse:collapse; font-size:14px; }
-th,td {
-  text-align:left;
-  padding:9px;
-  border-bottom:1px solid var(--line);
-  vertical-align:top;
-}
+th,td { text-align:left; padding:9px; border-bottom:1px solid var(--line); vertical-align:top; }
 th { color:var(--muted); }
-.linkbox {
-  overflow-wrap:anywhere;
-  background:#f1f5f9;
-  padding:10px;
-  border-radius:8px;
-  margin-top:8px;
-}
+.linkbox { overflow-wrap:anywhere; background:#f1f5f9; padding:10px; border-radius:8px; margin-top:8px; }
 hr { border:0; border-top:1px solid var(--line); margin:20px 0; }
+.team-admin { display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid var(--line); }
+.team-admin img { width:38px; height:38px; object-fit:contain; }
+.team-admin .team-info { flex:1; min-width:0; }
+.check-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:8px; margin:12px 0; }
+.check-item { display:flex; align-items:center; gap:8px; background:#f8fafc; padding:9px; border:1px solid var(--line); border-radius:8px; }
+.check-item input { width:auto; }
+.logo-preview { width:42px; height:42px; object-fit:contain; vertical-align:middle; margin-right:8px; }
 @media(max-width:520px) {
   .card { padding:14px; }
   .match { grid-template-columns:minmax(0,1fr) 46px 12px 46px minmax(0,1fr); gap:5px; }
   .score { width:46px!important; }
-  .team { font-size:12px; }
+  .team { font-size:12px; gap:4px; }
+  .team-logo { width:22px; height:22px; flex-basis:22px; }
   h1 { font-size:21px; }
   table { font-size:12px; }
   th,td { padding:6px; }
@@ -132,29 +73,16 @@ hr { border:0; border-top:1px solid var(--line); margin:20px 0; }
 </style>
 </head>
 <body>
-
-<header>
-  <div class="wrap">
-    <h1>Bolão do Brasileirão</h1>
-    <p>Palpites, rodada a rodada.</p>
-  </div>
-</header>
-
+<header><div class="wrap"><h1>Bolão do Brasileirão</h1><p>Palpites, rodada a rodada.</p></div></header>
 <main>
-
-<section id="loading" class="card">
-  Carregando o sistema...
-</section>
+<section id="loading" class="card">Carregando o sistema...</section>
 
 <!-- ÁREA DO PARTICIPANTE -->
 <section id="participant" class="hidden">
   <div class="card">
     <span class="pill">ÁREA DO PARTICIPANTE</span>
     <h2 id="welcome" style="margin-top:10px">Olá!</h2>
-    <p class="muted">
-      Preencha os placares dos dez jogos e envie seus palpites.
-      Depois do envio, somente o administrador poderá fazer alterações.
-    </p>
+    <p class="muted">Preencha os placares dos dez jogos e envie seus palpites. Depois do envio, somente o administrador poderá fazer alterações.</p>
   </div>
   <div id="rounds"></div>
 </section>
@@ -163,879 +91,510 @@ hr { border:0; border-top:1px solid var(--line); margin:20px 0; }
 <section id="adminLogin" class="card hidden">
   <h2>Acesso administrativo</h2>
   <p class="muted">Entre com seu e-mail e senha cadastrados no Supabase.</p>
-
-  <label>E-mail</label>
-  <input id="email" type="email" autocomplete="username">
-
-  <label>Senha</label>
-  <input id="password" type="password" autocomplete="current-password">
-
-  <button id="loginBtn">Entrar</button>
-  <p id="loginMsg"></p>
+  <label>E-mail</label><input id="email" type="email" autocomplete="username">
+  <label>Senha</label><input id="password" type="password" autocomplete="current-password">
+  <button id="loginBtn">Entrar</button><p id="loginMsg"></p>
 </section>
 
 <!-- PAINEL ADMINISTRATIVO -->
 <section id="admin" class="hidden">
   <div class="card">
     <div class="row" style="align-items:center">
-      <div>
-        <span class="pill">ADMINISTRADOR</span>
-        <h2 style="margin:8px 0 0">Painel de controle</h2>
-      </div>
-      <div style="text-align:right">
-        <button class="secondary" id="logoutBtn">Sair</button>
-      </div>
+      <div><span class="pill">ADMINISTRADOR</span><h2 style="margin:8px 0 0">Painel de controle</h2></div>
+      <div style="text-align:right"><button class="secondary" id="logoutBtn">Sair</button></div>
     </div>
   </div>
-
   <nav>
     <button class="tab active" data-tab="roundTab">Rodadas e jogos</button>
     <button class="tab" data-tab="peopleTab">Participantes</button>
     <button class="tab" data-tab="predTab">Palpites</button>
+    <button class="tab" data-tab="seasonTab">Temporadas</button>
+    <button class="tab" data-tab="teamsTab">Times</button>
   </nav>
 
   <!-- RODADAS E JOGOS -->
   <section id="roundTab" class="card">
     <h2>Cadastrar rodada</h2>
-
-    <label>Nome da rodada</label>
-    <input id="roundTitle" type="text" placeholder="Ex.: Rodada 1">
-
+    <label>Temporada</label><select id="roundSeason"></select>
+    <label>Nome da rodada</label><input id="roundTitle" type="text" placeholder="Ex.: Rodada 1">
     <div class="row">
-      <div>
-        <label>Encerramento dos palpites</label>
-        <input id="closesAt" type="datetime-local">
-      </div>
-      <div>
-        <label>Status</label>
-        <select id="roundStatus">
-          <option value="draft">Rascunho</option>
-          <option value="open">Aberta</option>
-          <option value="closed">Fechada</option>
-          <option value="finished">Finalizada</option>
-        </select>
-      </div>
+      <div><label>Encerramento dos palpites</label><input id="closesAt" type="datetime-local"></div>
+      <div><label>Status</label><select id="roundStatus"><option value="draft">Rascunho</option><option value="open">Aberta</option><option value="closed">Fechada</option><option value="finished">Finalizada</option></select></div>
     </div>
-
-    <button id="createRound">Criar rodada</button>
-    <p id="roundMsg"></p>
-
+    <button id="createRound">Criar rodada</button><p id="roundMsg"></p>
     <hr>
-
     <h2>Cadastrar os jogos</h2>
-    <label>Rodada</label>
-    <select id="matchRound"></select>
-    <p class="muted">Informe os dez confrontos.</p>
-
+    <label>Rodada</label><select id="matchRound"></select>
+    <p class="muted">Selecione o mandante e o visitante nos dez confrontos.</p>
     <div id="matchInputs"></div>
-    <button id="saveMatches">Salvar os 10 jogos</button>
-    <p id="matchMsg"></p>
-
-    <hr>
-
-    <h2>Rodadas cadastradas</h2>
-    <div id="roundList"></div>
+    <button id="saveMatches">Salvar os 10 jogos</button><p id="matchMsg"></p>
+    <hr><h2>Rodadas cadastradas</h2><div id="roundList"></div>
   </section>
 
   <!-- PARTICIPANTES -->
   <section id="peopleTab" class="card hidden">
-    <h2>Novo participante</h2>
-    <label>Nome do participante</label>
-    <input id="personName" type="text" placeholder="Nome completo">
-
-    <button id="createPerson">Gerar link individual</button>
-    <p id="personMsg"></p>
-    <div id="newLink"></div>
-
-    <hr>
-    <h2>Participantes cadastrados</h2>
-    <div id="peopleList"></div>
+    <h2>Novo participante</h2><label>Nome do participante</label><input id="personName" type="text" placeholder="Nome completo">
+    <button id="createPerson">Gerar link individual</button><p id="personMsg"></p><div id="newLink"></div>
+    <hr><h2>Participantes cadastrados</h2><div id="peopleList"></div>
   </section>
 
   <!-- PALPITES -->
   <section id="predTab" class="card hidden">
-    <h2>Consultar e editar palpites</h2>
-    <label>Rodada</label>
-    <select id="predRound"></select>
-
-    <button id="loadPred">Consultar palpites</button>
-    <button class="secondary" id="exportCsv">Exportar CSV para Excel</button>
+    <h2>Consultar e editar palpites</h2><label>Rodada</label><select id="predRound"></select>
+    <button id="loadPred">Consultar palpites</button><button class="secondary" id="exportCsv">Exportar CSV para Excel</button>
     <div id="predictions"></div>
   </section>
-</section>
 
+  <!-- TEMPORADAS -->
+  <section id="seasonTab" class="card hidden">
+    <h2>Cadastrar temporada</h2>
+    <p class="muted">Cada temporada mantém seu próprio conjunto de clubes e suas rodadas. Ao criar uma nova temporada, os clubes da temporada mais recente serão copiados para facilitar a atualização.</p>
+    <div class="row">
+      <div><label>Ano da temporada</label><input id="seasonYear" type="number" min="2020" max="2100" placeholder="Ex.: 2027"></div>
+      <div><label>Nome (opcional)</label><input id="seasonName" type="text" placeholder="Ex.: Brasileirão 2027"></div>
+    </div>
+    <button id="createSeason">Criar temporada</button><p id="seasonMsg"></p>
+    <hr><h2>Temporadas cadastradas</h2><div id="seasonList"></div>
+    <hr><h2>Clubes participantes da temporada</h2>
+    <label>Selecione a temporada para editar</label><select id="seasonTeamSelect"></select>
+    <p class="muted">Marque os clubes que disputarão esta edição e salve a seleção. Desmarcar um clube nesta lista não apaga o cadastro dele nem o histórico de temporadas anteriores.</p>
+    <div id="seasonTeamChecks" class="check-grid"></div>
+    <button id="saveSeasonTeams">Salvar clubes da temporada</button><p id="seasonTeamsMsg"></p>
+  </section>
+
+  <!-- TIMES -->
+  <section id="teamsTab" class="card hidden">
+    <h2>Cadastrar clube</h2>
+    <label>Nome do clube</label><input id="teamName" type="text" placeholder="Ex.: Flamengo">
+    <button id="createTeam">Cadastrar clube</button><p id="teamMsg"></p>
+    <hr><h2>Clubes cadastrados</h2>
+    <p class="muted">O cadastro do clube é único. Você pode alterar o nome, ativar/desativar e enviar ou substituir o escudo.</p>
+    <div id="teamsList"></div>
+  </section>
+</section>
 </main>
 
 <script>
 /* ==========================================
    CONEXÃO COM O SUPABASE
    ========================================== */
-
 const SUPABASE_URL = 'https://incwpptmpzedjlzunlbx.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_MRuFSXBcKPp-ma0J6NzK3w_iuvDWcmF';
-
-const db = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const $ = id => document.getElementById(id);
-
 const show = id => $(id).classList.remove('hidden');
 const hide = id => $(id).classList.add('hidden');
-
-const msg = (id,text,ok=false) => {
-  $(id).textContent = text;
-  $(id).className = ok ? 'success' : 'error';
-};
-
-const esc = value => String(value ?? '').replace(/[&<>"']/g,c=>({
-  '&':'&amp;',
-  '<':'&lt;',
-  '>':'&gt;',
-  '"':'&quot;',
-  "'":'&#39;'
-}[c]));
-
-let roundsCache = [];
-let csvRows = [];
-let participantRounds = [];
+const msg = (id,text,ok=false) => { $(id).textContent = text; $(id).className = ok ? 'success' : 'error'; };
+const esc = value => String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const logoHtml = (url,name) => url ? `<img class="team-logo" src="${esc(url)}" alt="Escudo ${esc(name)}" onerror="this.style.display='none'">` : '';
+let roundsCache = [], csvRows = [], participantRounds = [];
+let seasonsCache = [], teamsCache = [], seasonTeamsCache = [], matchTeamsCache = [];
 
 /* ==========================================
    FORMULÁRIO DOS DEZ JOGOS
    ========================================== */
-
 function matchForm() {
-  $('matchInputs').innerHTML = Array.from(
-    {length:10},
-    (_,i)=>`
-      <div class="row">
-        <div>
-          <label>Jogo ${i+1} — Mandante</label>
-          <input type="text" id="home${i}" placeholder="Time da casa">
-        </div>
-        <div>
-          <label>Visitante</label>
-          <input type="text" id="away${i}" placeholder="Time visitante">
-        </div>
-      </div>
-    `
-  ).join('');
+  const options = matchTeamsCache.map(t=>`<option value="${esc(t.id)}">${esc(t.name)}</option>`).join('');
+  const placeholder = '<option value="">Selecione um clube</option>';
+  $('matchInputs').innerHTML = Array.from({length:10},(_,i)=>`
+    <div class="row">
+      <div><label>Jogo ${i+1} — Mandante</label><select id="home${i}">${placeholder}${options}</select></div>
+      <div><label>Visitante</label><select id="away${i}">${placeholder}${options}</select></div>
+    </div>
+  `).join('');
+}
+
+/* ==========================================
+   TEMPORADAS
+   ========================================== */
+async function loadSeasons() {
+  const {data,error} = await db.from('seasons').select('*').order('year',{ascending:false});
+  if(error) { console.error(error); msg('seasonMsg','Erro ao carregar temporadas: '+error.message); return; }
+  seasonsCache = data || [];
+  const options = seasonsCache.map(s=>`<option value="${s.id}">${esc(s.title || ('Brasileirão '+s.year))}</option>`).join('');
+  const seasonSelects = ['roundSeason','seasonTeamSelect'];
+  seasonSelects.forEach(id=>{
+    const previous = $(id).value;
+    $(id).innerHTML = options || '<option value="">Nenhuma temporada</option>';
+    if(seasonsCache.some(s=>String(s.id)===String(previous))) $(id).value = previous;
+  });
+  $('seasonList').innerHTML = seasonsCache.length ? seasonsCache.map(s=>`
+    <div class="notice"><b>${esc(s.title || ('Brasileirão '+s.year))}</b> <span class="pill">${esc(s.year)}</span>
+      <div class="muted">ID: ${esc(s.id)}</div>
+      <button class="secondary" onclick="selectSeasonForTeams('${s.id}')">Gerenciar clubes</button>
+    </div>`).join('') : '<p class="muted">Nenhuma temporada cadastrada.</p>';
+  if(seasonsCache.length && !$('seasonTeamSelect').value) $('seasonTeamSelect').value = seasonsCache[0].id;
+  await loadSeasonTeams();
+  await loadMatchTeams();
+}
+window.selectSeasonForTeams = id => { $('seasonTeamSelect').value=id; loadSeasonTeams(); };
+
+$('createSeason').onclick = async () => {
+  const year = Number($('seasonYear').value);
+  const title = $('seasonName').value.trim() || (year ? 'Brasileirão '+year : '');
+  if(!Number.isInteger(year) || year<2020 || year>2100) { msg('seasonMsg','Informe um ano válido.'); return; }
+  if(seasonsCache.some(s=>Number(s.year)===year)) { msg('seasonMsg','Já existe uma temporada cadastrada para esse ano.'); return; }
+  const {data,error} = await db.from('seasons').insert({year,title}).select().single();
+  if(error) { msg('seasonMsg','Não foi possível criar a temporada: '+error.message); return; }
+  // Copia os vínculos da temporada mais recente, sem alterar a temporada anterior.
+  const previousSeason = seasonsCache[0];
+  if(previousSeason) {
+    const {data:previousLinks,error:copyError} = await db.from('season_teams').select('team_id').eq('season_id',previousSeason.id);
+    if(copyError) { msg('seasonMsg','Temporada criada, mas não foi possível copiar os clubes: '+copyError.message); }
+    else if(previousLinks?.length) {
+      const rows = previousLinks.map(x=>({season_id:data.id,team_id:x.team_id}));
+      const {error:insertError} = await db.from('season_teams').insert(rows);
+      if(insertError) msg('seasonMsg','Temporada criada, mas houve erro ao copiar os clubes: '+insertError.message);
+      else msg('seasonMsg','Temporada criada e clubes da edição anterior copiados. Confira a lista e atualize os participantes.',true);
+    } else msg('seasonMsg','Temporada criada. Selecione os clubes participantes.',true);
+  } else msg('seasonMsg','Temporada criada. Cadastre e associe os clubes.',true);
+  $('seasonYear').value=''; $('seasonName').value='';
+  await loadSeasons(); $('seasonTeamSelect').value=data.id; await loadSeasonTeams();
+};
+
+async function loadSeasonTeams() {
+  const seasonId = $('seasonTeamSelect').value;
+  if(!seasonId) { $('seasonTeamChecks').innerHTML='<p class="muted">Cadastre uma temporada primeiro.</p>'; return; }
+  const [{data:allTeams,error:teamError},{data:links,error:linkError}] = await Promise.all([
+    db.from('teams').select('id,name,logo_url,is_active').order('name'),
+    db.from('season_teams').select('team_id').eq('season_id',seasonId)
+  ]);
+  if(teamError || linkError) { $('seasonTeamChecks').textContent=(teamError||linkError).message; return; }
+  teamsCache = allTeams || []; seasonTeamsCache = (links||[]).map(x=>String(x.team_id));
+  $('seasonTeamChecks').innerHTML = teamsCache.length ? teamsCache.map(t=>`
+    <label class="check-item"><input type="checkbox" class="season-team-check" value="${t.id}" ${seasonTeamsCache.includes(String(t.id))?'checked':''} ${!t.is_active?'disabled':''}>
+      ${logoHtml(t.logo_url,t.name)} <span>${esc(t.name)}${!t.is_active?' (inativo)':''}</span></label>
+  `).join('') : '<p class="muted">Cadastre clubes na aba Times.</p>';
+}
+$('seasonTeamSelect').onchange = loadSeasonTeams;
+$('saveSeasonTeams').onclick = async () => {
+  const seasonId=$('seasonTeamSelect').value;
+  if(!seasonId) { msg('seasonTeamsMsg','Selecione uma temporada.'); return; }
+  const selected=[...document.querySelectorAll('.season-team-check:checked')].map(x=>x.value);
+  const {error:deleteError}=await db.from('season_teams').delete().eq('season_id',seasonId);
+  if(deleteError) { msg('seasonTeamsMsg','Erro ao atualizar clubes: '+deleteError.message); return; }
+  if(selected.length) {
+    const rows=selected.map(team_id=>({season_id:seasonId,team_id}));
+    const {error:insertError}=await db.from('season_teams').insert(rows);
+    if(insertError) { msg('seasonTeamsMsg','Erro ao salvar clubes: '+insertError.message); return; }
+  }
+  msg('seasonTeamsMsg','Clubes da temporada atualizados com sucesso!',true);
+  await loadMatchTeams();
+};
+
+/* ==========================================
+   CADASTRO E GERENCIAMENTO DE CLUBES
+   ========================================== */
+async function loadTeams() {
+  const {data,error}=await db.from('teams').select('id,name,logo_url,is_active').order('name');
+  if(error) { $('teamsList').textContent=error.message; return; }
+  teamsCache=data||[];
+  $('teamsList').innerHTML=teamsCache.length ? teamsCache.map(t=>`
+    <div class="team-admin">
+      ${t.logo_url?`<img src="${esc(t.logo_url)}" alt="Escudo" onerror="this.style.display='none'">`:'<div style="width:38px"></div>'}
+      <div class="team-info"><b>${esc(t.name)}</b><div class="muted">${t.is_active?'Ativo':'Inativo'}</div></div>
+      <button class="secondary" onclick="renameTeam('${t.id}')">Renomear</button>
+      <button class="secondary" onclick="toggleTeam('${t.id}',${!t.is_active})">${t.is_active?'Desativar':'Ativar'}</button>
+      <button class="secondary" onclick="chooseTeamLogo('${t.id}')">${t.logo_url?'Trocar escudo':'Enviar escudo'}</button>
+    </div>
+  `).join('') : '<p class="muted">Nenhum clube cadastrado.</p>';
+  await loadSeasonTeams();
+}
+$('createTeam').onclick=async()=>{
+  const name=$('teamName').value.trim();
+  if(!name) { msg('teamMsg','Informe o nome do clube.'); return; }
+  const {error}=await db.from('teams').insert({name,is_active:true});
+  if(error) { msg('teamMsg','Não foi possível cadastrar: '+error.message); return; }
+  $('teamName').value=''; msg('teamMsg','Clube cadastrado com sucesso!',true); await loadTeams(); await loadMatchTeams();
+};
+window.renameTeam=async id=>{
+  const team=teamsCache.find(t=>String(t.id)===String(id));
+  const name=prompt('Informe o novo nome do clube:',team?.name||'');
+  if(name===null) return;
+  if(!name.trim()) { alert('O nome não pode ficar vazio.'); return; }
+  const {error}=await db.from('teams').update({name:name.trim()}).eq('id',id);
+  if(error) alert('Erro ao renomear clube: '+error.message); else { await loadTeams(); await loadMatchTeams(); }
+};
+window.toggleTeam=async(id,active)=>{
+  const {error}=await db.from('teams').update({is_active:active}).eq('id',id);
+  if(error) alert(error.message); else { await loadTeams(); await loadMatchTeams(); }
+};
+window.chooseTeamLogo=id=>{
+  const input=document.createElement('input'); input.type='file'; input.accept='image/png,image/jpeg,image/webp';
+  input.onchange=async()=>{ const file=input.files?.[0]; if(!file) return; await uploadTeamLogo(id,file); };
+  input.click();
+};
+async function uploadTeamLogo(teamId,file) {
+  if(file.size>3*1024*1024) { alert('O arquivo deve ter no máximo 3 MB.'); return; }
+  const allowed=['image/png','image/jpeg','image/webp'];
+  if(!allowed.includes(file.type)) { alert('Use uma imagem PNG, JPG ou WebP.'); return; }
+  const ext=file.type==='image/png'?'png':file.type==='image/webp'?'webp':'jpg';
+  const path=`${teamId}/${Date.now()}.${ext}`;
+  const {error:uploadError}=await db.storage.from('team-logos').upload(path,file,{upsert:true,contentType:file.type});
+  if(uploadError) { alert('Erro ao enviar escudo: '+uploadError.message); return; }
+  const {data:publicData}=db.storage.from('team-logos').getPublicUrl(path);
+  const {error:updateError}=await db.from('teams').update({logo_url:publicData.publicUrl}).eq('id',teamId);
+  if(updateError) { alert('Imagem enviada, mas não foi possível salvar o endereço: '+updateError.message); return; }
+  alert('Escudo atualizado com sucesso!'); await loadTeams(); await loadMatchTeams();
+}
+
+/* ==========================================
+   CARREGAR CLUBES DA TEMPORADA DA RODADA
+   ========================================== */
+async function loadMatchTeams() {
+  const roundId=$('matchRound').value;
+  const round=roundsCache.find(r=>String(r.id)===String(roundId));
+  if(!round?.season_id) { matchTeamsCache=[]; matchForm(); return; }
+  const {data,error}=await db.from('season_teams').select('teams(id,name,logo_url,is_active)').eq('season_id',round.season_id);
+  if(error) { console.error(error); matchTeamsCache=[]; matchForm(); msg('matchMsg','Não foi possível carregar os clubes da temporada: '+error.message); return; }
+  matchTeamsCache=(data||[]).map(x=>x.teams).filter(t=>t && t.is_active).sort((a,b)=>a.name.localeCompare(b.name,'pt-BR'));
+  matchForm();
+  if(matchTeamsCache.length<2) msg('matchMsg','Associe pelo menos dois clubes à temporada selecionada na aba Temporadas.');
 }
 
 /* ==========================================
    CARREGAR RODADAS
    ========================================== */
-
 async function loadRounds() {
-  const {data,error} = await db
-    .from('rounds')
-    .select('*')
-    .order('closes_at',{ascending:false});
-
-  if(error) {
-    msg('roundMsg',error.message);
-    return;
-  }
-
-  roundsCache = data || [];
-
-  const opts = roundsCache.map(r=>`
-    <option value="${r.id}">
-      ${esc(r.title)} (${esc(r.status)})
-    </option>
-  `).join('');
-
-  const previousMatchRound = $('matchRound').value;
-  const previousPredRound = $('predRound').value;
-
-  $('matchRound').innerHTML = opts || '<option value="">Nenhuma rodada</option>';
-  $('predRound').innerHTML = opts || '<option value="">Nenhuma rodada</option>';
-
-  if(roundsCache.some(r=>r.id===previousMatchRound)) {
-    $('matchRound').value = previousMatchRound;
-  }
-
-  if(roundsCache.some(r=>r.id===previousPredRound)) {
-    $('predRound').value = previousPredRound;
-  }
-
-  $('roundList').innerHTML = roundsCache.length
-    ? roundsCache.map(r=>`
-      <div class="notice">
-        <b>${esc(r.title)}</b>
-        <span class="pill">${esc(r.status)}</span>
-        <div class="muted">
-          ${r.closes_at ? new Date(r.closes_at).toLocaleString('pt-BR') : ''}
-        </div>
-        <button class="secondary" onclick="setRoundStatus('${r.id}','open')">Abrir</button>
-        <button class="secondary" onclick="setRoundStatus('${r.id}','closed')">Fechar</button>
-        <button class="secondary" onclick="setRoundStatus('${r.id}','finished')">Finalizar</button>
-        <button class="danger" onclick="deleteRound('${r.id}')">Excluir</button>
-      </div>
-    `).join('')
-    : '<p class="muted">Nenhuma rodada cadastrada.</p>';
+  const {data,error}=await db.from('rounds').select('*').order('closes_at',{ascending:false});
+  if(error) { msg('roundMsg',error.message); return; }
+  roundsCache=data||[];
+  const opts=roundsCache.map(r=>`<option value="${r.id}">${esc(r.title)} (${esc(r.status)})</option>`).join('');
+  const previousMatchRound=$('matchRound').value, previousPredRound=$('predRound').value;
+  $('matchRound').innerHTML=opts||'<option value="">Nenhuma rodada</option>';
+  $('predRound').innerHTML=opts||'<option value="">Nenhuma rodada</option>';
+  if(roundsCache.some(r=>String(r.id)===String(previousMatchRound))) $('matchRound').value=previousMatchRound;
+  if(roundsCache.some(r=>String(r.id)===String(previousPredRound))) $('predRound').value=previousPredRound;
+  $('roundList').innerHTML=roundsCache.length?roundsCache.map(r=>{
+    const season=seasonsCache.find(s=>String(s.id)===String(r.season_id));
+    return `<div class="notice"><b>${esc(r.title)}</b> <span class="pill">${esc(r.status)}</span>
+      <div class="muted">${esc(season?.title|| (season?'Brasileirão '+season.year:'Temporada não identificada'))}${r.closes_at?' · '+new Date(r.closes_at).toLocaleString('pt-BR'):''}</div>
+      <button class="secondary" onclick="setRoundStatus('${r.id}','open')">Abrir</button>
+      <button class="secondary" onclick="setRoundStatus('${r.id}','closed')">Fechar</button>
+      <button class="secondary" onclick="setRoundStatus('${r.id}','finished')">Finalizar</button>
+      <button class="danger" onclick="deleteRound('${r.id}')">Excluir</button></div>`;
+  }).join(''):'<p class="muted">Nenhuma rodada cadastrada.</p>';
+  await loadMatchTeams();
 }
-
-window.setRoundStatus = async (id,status) => {
-  const {error} = await db
-    .from('rounds')
-    .update({status})
-    .eq('id',id);
-
-  if(error) alert(error.message);
-  else await loadRounds();
+$('matchRound').onchange=loadMatchTeams;
+window.setRoundStatus=async(id,status)=>{
+  const {error}=await db.from('rounds').update({status}).eq('id',id);
+  if(error) alert(error.message); else await loadRounds();
 };
-
-/* ==========================================
-   EXCLUIR RODADA
-   ========================================== */
-
-window.deleteRound = async (id) => {
-  const round = roundsCache.find(r=>r.id===id);
-  const title = round?.title || 'esta rodada';
-
-  const confirmed = confirm(
-    `Tem certeza de que deseja excluir "${title}"?\n\n` +
-    'Esta ação também apagará os jogos e todos os palpites desta rodada. ' +
-    'A exclusão é permanente e não poderá ser desfeita.'
-  );
-
-  if(!confirmed) return;
-
-  const {error} = await db.rpc('delete_round',{
-    p_round_id:id
-  });
-
-  if(error) {
-    alert('Não foi possível excluir a rodada: '+error.message);
-    return;
-  }
-
-  csvRows = [];
-  $('predictions').innerHTML = '';
-
-  alert('Rodada excluída com sucesso!');
-
-  await loadRounds();
+window.deleteRound=async id=>{
+  const round=roundsCache.find(r=>String(r.id)===String(id));
+  if(!confirm(`Tem certeza de que deseja excluir "${round?.title||'esta rodada'}"?\n\nEsta ação também apagará os jogos e todos os palpites desta rodada. A exclusão é permanente e não poderá ser desfeita.`)) return;
+  const {error}=await db.rpc('delete_round',{p_round_id:id});
+  if(error) { alert('Não foi possível excluir a rodada: '+error.message); return; }
+  csvRows=[]; $('predictions').innerHTML=''; alert('Rodada excluída com sucesso!'); await loadRounds();
 };
 
 /* ==========================================
    CARREGAR PARTICIPANTES
    ========================================== */
-
 async function loadPeople() {
-  const {data,error} = await db
-    .from('participants')
-    .select('id,display_name,is_active,created_at')
-    .order('created_at',{ascending:false});
-
-  if(error) {
-    $('peopleList').textContent = error.message;
-    return;
-  }
-
-  $('peopleList').innerHTML = data?.length
-    ? `<table>
-        <thead>
-          <tr>
-            <th>Participante</th>
-            <th>Status</th>
-            <th>Ação</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${data.map(p=>`
-            <tr>
-              <td>${esc(p.display_name)}</td>
-              <td>${p.is_active?'Ativo':'Inativo'}</td>
-              <td>
-                <button class="secondary"
-                  onclick="togglePerson('${p.id}',${!p.is_active})">
-                  ${p.is_active?'Desativar':'Ativar'}
-                </button>
-                <button
-                  onclick="regeneratePersonLink('${p.id}')">
-                  Gerar novo link
-                </button>
-              </td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>`
-    : '<p class="muted">Nenhum participante cadastrado.</p>';
+  const {data,error}=await db.from('participants').select('id,display_name,is_active,created_at').order('created_at',{ascending:false});
+  if(error) { $('peopleList').textContent=error.message; return; }
+  $('peopleList').innerHTML=data?.length?`<table><thead><tr><th>Participante</th><th>Status</th><th>Ação</th></tr></thead><tbody>
+    ${data.map(p=>`<tr><td>${esc(p.display_name)}</td><td>${p.is_active?'Ativo':'Inativo'}</td><td>
+      <button class="secondary" onclick="togglePerson('${p.id}',${!p.is_active})">${p.is_active?'Desativar':'Ativar'}</button>
+      <button onclick="regeneratePersonLink('${p.id}')">Gerar novo link</button></td></tr>`).join('')}
+    </tbody></table>`:'<p class="muted">Nenhum participante cadastrado.</p>';
 }
-
-window.togglePerson = async (id,active) => {
-  const {error} = await db
-    .from('participants')
-    .update({is_active:active})
-    .eq('id',id);
-
-  if(error) alert(error.message);
-  else await loadPeople();
+window.togglePerson=async(id,active)=>{
+  const {error}=await db.from('participants').update({is_active:active}).eq('id',id);
+  if(error) alert(error.message); else await loadPeople();
 };
-
-/* ==========================================
-   GERAR NOVO LINK DO PARTICIPANTE
-   ========================================== */
-
-window.regeneratePersonLink = async (id) => {
-  const confirmed = confirm(
-    'Deseja gerar um novo link para este participante?\n\n' +
-    'O link anterior deixará de funcionar imediatamente.'
-  );
-
-  if(!confirmed) return;
-
-  const {data,error} = await db.rpc(
-    'regenerate_participant_link',
-    {p_participant_id:id}
-  );
-
-  if(error) {
-    alert('Não foi possível gerar o novo link: '+error.message);
-    return;
-  }
-
-  const link =
-    location.origin +
-    location.pathname +
-    '?token=' +
-    encodeURIComponent(data);
-
-  try {
-    await navigator.clipboard.writeText(link);
-
-    alert(
-      'Novo link gerado e copiado com sucesso!\n\n' +
-      'Envie o novo link ao participante. O anterior não funciona mais.'
-    );
-  } catch(e) {
-    prompt(
-      'Novo link gerado. Copie e envie ao participante:',
-      link
-    );
-  }
+window.regeneratePersonLink=async id=>{
+  if(!confirm('Deseja gerar um novo link para este participante?\n\nO link anterior deixará de funcionar imediatamente.')) return;
+  const {data,error}=await db.rpc('regenerate_participant_link',{p_participant_id:id});
+  if(error) { alert('Não foi possível gerar o novo link: '+error.message); return; }
+  const token=typeof data==='string'?data:(data?.access_token||data?.token||data?.[0]?.access_token||data?.[0]?.token);
+  if(!token) { alert('O link foi regenerado, mas a resposta do banco não trouxe o token esperado.'); return; }
+  const link=location.origin+location.pathname+'?token='+encodeURIComponent(token);
+  try { await navigator.clipboard.writeText(link); alert('Novo link gerado e copiado com sucesso! Envie-o ao participante.'); }
+  catch(e) { prompt('Novo link gerado. Copie e envie ao participante:',link); }
 };
 
 /* ==========================================
    AUTORIZAÇÃO DO ADMINISTRADOR
    ========================================== */
-
 async function adminStart() {
-  const {data,error} = await db.rpc('is_admin');
-
-  if(error || data !== true) {
-    await db.auth.signOut();
-    msg('loginMsg','Este usuário não está autorizado como administrador.');
-    return;
-  }
-
-  hide('adminLogin');
-  show('admin');
-
-  await loadRounds();
-  await loadPeople();
+  const {data,error}=await db.rpc('is_admin');
+  if(error || data!==true) { await db.auth.signOut(); msg('loginMsg','Este usuário não está autorizado como administrador.'); return; }
+  hide('adminLogin'); show('admin');
+  await loadSeasons(); await loadTeams(); await loadRounds(); await loadPeople();
 }
 
 /* ==========================================
-   INICIALIZAÇÃO DO SISTEMA
+   INICIALIZAÇÃO E ÁREA DO PARTICIPANTE
    ========================================== */
-
 async function boot() {
-  const token = new URLSearchParams(location.search).get('token');
-
+  const token=new URLSearchParams(location.search).get('token');
   if(token) {
     try {
-      const {data,error} = await db.rpc(
-        'get_participant_rounds',
-        {p_token:token}
-      );
-
+      const {data,error}=await db.rpc('get_participant_rounds_with_logos',{p_token:token});
       if(error) throw error;
-
-      hide('loading');
-      show('participant');
-
-      $('welcome').textContent = 'Olá, ' + data.participant + '!';
-
-      participantRounds = data.rounds || [];
-
-      if(!participantRounds.length) {
-        $('rounds').innerHTML =
-          '<div class="card">Não há rodadas abertas no momento.</div>';
-        return;
-      }
-
-      $('rounds').innerHTML = participantRounds.map(r=>`
-        <div class="card">
-          <h2>${esc(r.title)}</h2>
-
-          <p class="muted">
-            ${r.closes_at
-              ? 'Encerramento: '+new Date(r.closes_at).toLocaleString('pt-BR')
-              : ''}
-          </p>
-
-          ${r.submitted
-            ? '<p class="success">Seus palpites já foram enviados nesta rodada.</p>'
-            : ''}
-
-          <div>
-            ${(r.matches || []).map(m=>`
-              <div class="match">
-                <div class="team">${esc(m.home_team)}</div>
-
-                <input
-                  class="score"
-                  type="number"
-                  min="0"
-                  max="99"
-                  inputmode="numeric"
-                  id="h_${m.id}"
-                  ${r.submitted?'disabled':''}
-                >
-
-                <div class="vs">×</div>
-
-                <input
-                  class="score"
-                  type="number"
-                  min="0"
-                  max="99"
-                  inputmode="numeric"
-                  id="a_${m.id}"
-                  ${r.submitted?'disabled':''}
-                >
-
-                <div class="team">${esc(m.away_team)}</div>
-              </div>
-            `).join('')}
-          </div>
-
-          ${r.matches.length===10 && !r.submitted
-            ? `<button onclick="sendPicks('${r.id}')">Enviar meus palpites</button>`
-            : ''}
-        </div>
-      `).join('');
-
+      hide('loading'); show('participant');
+      $('welcome').textContent='Olá, '+data.participant+'!';
+      participantRounds=data.rounds||[];
+      if(!participantRounds.length) { $('rounds').innerHTML='<div class="card">Não há rodadas abertas no momento.</div>'; return; }
+      $('rounds').innerHTML=participantRounds.map(r=>`
+        <div class="card"><h2>${esc(r.title)}</h2>
+          <p class="muted">${r.closes_at?'Encerramento: '+new Date(r.closes_at).toLocaleString('pt-BR'):''}</p>
+          ${r.submitted?'<p class="success">Seus palpites já foram enviados nesta rodada.</p>':''}
+          <div>${(r.matches||[]).map(m=>`
+            <div class="match">
+              <div class="team">${logoHtml(m.home_logo_url,m.home_team)}<span class="team-name">${esc(m.home_team)}</span></div>
+              <input class="score" type="number" min="0" max="99" inputmode="numeric" id="h_${m.id}" ${r.submitted?'disabled':''}>
+              <div class="vs">×</div>
+              <input class="score" type="number" min="0" max="99" inputmode="numeric" id="a_${m.id}" ${r.submitted?'disabled':''}>
+              <div class="team">${logoHtml(m.away_logo_url,m.away_team)}<span class="team-name">${esc(m.away_team)}</span></div>
+            </div>`).join('')}</div>
+          ${r.matches?.length===10&&!r.submitted?`<button onclick="sendPicks('${r.id}')">Enviar meus palpites</button>`:''}
+        </div>`).join('');
     } catch(e) {
-      hide('loading');
-      show('participant');
-
-      $('rounds').innerHTML = `
-        <div class="card error">
-          Não foi possível validar este link.
-          Verifique se ele está correto ou fale com o administrador.
-        </div>
-      `;
+      hide('loading'); show('participant');
+      $('rounds').innerHTML=`<div class="card error">Não foi possível validar este link. Verifique se ele está correto ou fale com o administrador.<br><small>${esc(e.message||'')}</small></div>`;
     }
-
     return;
   }
-
-  hide('loading');
-  show('adminLogin');
-
-  const {data:{session}} = await db.auth.getSession();
-
+  hide('loading'); show('adminLogin');
+  const {data:{session}}=await db.auth.getSession();
   if(session) await adminStart();
 }
 
 /* ==========================================
    ENVIAR PALPITES DO PARTICIPANTE
    ========================================== */
-
-window.sendPicks = async (roundId) => {
-  const round = participantRounds.find(r=>r.id===roundId);
-
-  if(!round || round.matches.length!==10) {
-    alert('Esta rodada não possui dez jogos cadastrados.');
-    return;
-  }
-
-  const predictions = [];
-
+window.sendPicks=async roundId=>{
+  const round=participantRounds.find(r=>String(r.id)===String(roundId));
+  if(!round||round.matches.length!==10) { alert('Esta rodada não possui dez jogos cadastrados.'); return; }
+  const predictions=[];
   for(const m of round.matches) {
-    const h = $('h_'+m.id).value;
-    const a = $('a_'+m.id).value;
-
-    if(h==='' || a==='') {
-      alert('Preencha os dois placares de todos os jogos.');
-      return;
-    }
-
-    if(
-      !Number.isInteger(Number(h)) ||
-      !Number.isInteger(Number(a)) ||
-      Number(h)<0 || Number(a)<0 ||
-      Number(h)>99 || Number(a)>99
-    ) {
-      alert('Use placares inteiros entre 0 e 99.');
-      return;
-    }
-
-    predictions.push({
-      match_id:m.id,
-      home_goals:Number(h),
-      away_goals:Number(a)
-    });
+    const h=$('h_'+m.id).value, a=$('a_'+m.id).value;
+    if(h===''||a==='') { alert('Preencha os dois placares de todos os jogos.'); return; }
+    if(!Number.isInteger(Number(h))||!Number.isInteger(Number(a))||Number(h)<0||Number(a)<0||Number(h)>99||Number(a)>99) { alert('Use placares inteiros entre 0 e 99.'); return; }
+    predictions.push({match_id:m.id,home_goals:Number(h),away_goals:Number(a)});
   }
-
-  if(!confirm(
-    'Confirma o envio? Depois disso, somente o administrador poderá alterar seus palpites.'
-  )) return;
-
-  const token = new URLSearchParams(location.search).get('token');
-
-  const {error} = await db.rpc('submit_predictions',{
-    p_token:token,
-    p_predictions:predictions
-  });
-
-  if(error) {
-    alert(error.message);
-    return;
-  }
-
-  alert('Palpites enviados com sucesso!');
-  location.reload();
+  if(!confirm('Confirma o envio? Depois disso, somente o administrador poderá alterar seus palpites.')) return;
+  const token=new URLSearchParams(location.search).get('token');
+  const {error}=await db.rpc('submit_predictions',{p_token:token,p_predictions:predictions});
+  if(error) { alert(error.message); return; }
+  alert('Palpites enviados com sucesso!'); location.reload();
 };
 
 /* ==========================================
    LOGIN E SAÍDA DO ADMINISTRADOR
    ========================================== */
-
-$('loginBtn').onclick = async () => {
+$('loginBtn').onclick=async()=>{
   msg('loginMsg','');
-
-  const {error} = await db.auth.signInWithPassword({
-    email:$('email').value,
-    password:$('password').value
-  });
-
-  if(error) {
-    msg('loginMsg',error.message);
-    return;
-  }
-
+  const {error}=await db.auth.signInWithPassword({email:$('email').value,password:$('password').value});
+  if(error) { msg('loginMsg',error.message); return; }
   await adminStart();
 };
-
-$('logoutBtn').onclick = async () => {
-  await db.auth.signOut();
-  location.reload();
-};
+$('logoutBtn').onclick=async()=>{ await db.auth.signOut(); location.reload(); };
 
 /* ==========================================
    CRIAR RODADA
    ========================================== */
-
-$('createRound').onclick = async () => {
-  const title = $('roundTitle').value.trim();
-
-  if(!title) {
-    msg('roundMsg','Informe o nome da rodada.');
-    return;
-  }
-
-  const {error} = await db
-    .from('rounds')
-    .insert({
-      title,
-      status:$('roundStatus').value,
-      closes_at:$('closesAt').value
-        ? new Date($('closesAt').value).toISOString()
-        : null
-    });
-
-  if(error) {
-    msg('roundMsg',error.message);
-  } else {
-    msg('roundMsg','Rodada criada com sucesso!',true);
-    $('roundTitle').value = '';
-    await loadRounds();
-  }
+$('createRound').onclick=async()=>{
+  const title=$('roundTitle').value.trim(), seasonId=$('roundSeason').value;
+  if(!seasonId) { msg('roundMsg','Cadastre ou selecione uma temporada antes de criar a rodada.'); return; }
+  if(!title) { msg('roundMsg','Informe o nome da rodada.'); return; }
+  const payload={title,season_id:seasonId,status:$('roundStatus').value,closes_at:$('closesAt').value?new Date($('closesAt').value).toISOString():null};
+  const {error}=await db.from('rounds').insert(payload);
+  if(error) { msg('roundMsg',error.message); return; }
+  msg('roundMsg','Rodada criada com sucesso!',true); $('roundTitle').value=''; await loadRounds();
 };
 
 /* ==========================================
    CADASTRAR OS DEZ JOGOS
    ========================================== */
-
-$('saveMatches').onclick = async () => {
-  const rid = $('matchRound').value;
-
-  if(!rid) {
-    msg('matchMsg','Cadastre uma rodada primeiro.');
-    return;
-  }
-
-  const rows = [];
-
+$('saveMatches').onclick=async()=>{
+  const rid=$('matchRound').value;
+  if(!rid) { msg('matchMsg','Cadastre uma rodada primeiro.'); return; }
+  if(matchTeamsCache.length<2) { msg('matchMsg','Esta temporada precisa ter pelo menos dois clubes associados.'); return; }
+  const rows=[];
   for(let i=0;i<10;i++) {
-    const home = $('home'+i).value.trim();
-    const away = $('away'+i).value.trim();
-
-    if(!home || !away) {
-      msg('matchMsg','Preencha os dois times dos dez jogos.');
-      return;
-    }
-
-    rows.push({
-      round_id:rid,
-      match_number:i+1,
-      home_team:home,
-      away_team:away
-    });
+    const homeId=$('home'+i).value, awayId=$('away'+i).value;
+    const homeTeam=matchTeamsCache.find(t=>String(t.id)===String(homeId));
+    const awayTeam=matchTeamsCache.find(t=>String(t.id)===String(awayId));
+    if(!homeTeam||!awayTeam) { msg('matchMsg','Selecione os dois clubes dos dez jogos.'); return; }
+    if(String(homeId)===String(awayId)) { msg('matchMsg',`No jogo ${i+1}, mandante e visitante não podem ser o mesmo clube.`); return; }
+    rows.push({round_id:rid,match_number:i+1,home_team:homeTeam.name,away_team:awayTeam.name,home_team_id:homeTeam.id,away_team_id:awayTeam.id});
   }
-
-  const {error} = await db.from('matches').insert(rows);
-
-  if(error) {
-    msg('matchMsg',error.message);
-  } else {
-    msg('matchMsg','Os dez jogos foram cadastrados!',true);
-    matchForm();
-  }
+  const {error}=await db.from('matches').insert(rows);
+  if(error) { msg('matchMsg',error.message); return; }
+  msg('matchMsg','Os dez jogos foram cadastrados!',true); matchForm();
 };
 
 /* ==========================================
    CADASTRAR PARTICIPANTE E GERAR LINK
    ========================================== */
-
-$('createPerson').onclick = async () => {
-  const name = $('personName').value.trim();
-
-  if(!name) {
-    msg('personMsg','Informe o nome.');
-    return;
-  }
-
-  const {data,error} = await db.rpc(
-    'create_participant_with_link',
-    {p_display_name:name}
-  );
-
-  if(error) {
-    msg('personMsg',error.message);
-    return;
-  }
-
-  const row = Array.isArray(data) ? data[0] : data;
-
-  const link =
-    location.origin +
-    location.pathname +
-    '?token=' +
-    encodeURIComponent(row.access_token);
-
-  msg(
-    'personMsg',
-    'Participante criado. Copie e guarde o link agora; o token não será exibido novamente.',
-    true
-  );
-
-  $('newLink').innerHTML = `
-    <div class="linkbox">${esc(link)}</div>
-    <button onclick="copyLink()">Copiar link</button>
-  `;
-
-  window.generatedLink = link;
-  $('personName').value = '';
-
-  await loadPeople();
+$('createPerson').onclick=async()=>{
+  const name=$('personName').value.trim();
+  if(!name) { msg('personMsg','Informe o nome.'); return; }
+  const {data,error}=await db.rpc('create_participant_with_link',{p_display_name:name});
+  if(error) { msg('personMsg',error.message); return; }
+  const row=Array.isArray(data)?data[0]:data;
+  const link=location.origin+location.pathname+'?token='+encodeURIComponent(row.access_token);
+  msg('personMsg','Participante criado. Copie e guarde o link agora; o token não será exibido novamente.',true);
+  $('newLink').innerHTML=`<div class="linkbox">${esc(link)}</div><button onclick="copyLink()">Copiar link</button>`;
+  window.generatedLink=link; $('personName').value=''; await loadPeople();
 };
-
-window.copyLink = async () => {
-  try {
-    await navigator.clipboard.writeText(window.generatedLink);
-    alert('Link copiado!');
-  } catch(e) {
-    prompt('Copie o link:',window.generatedLink);
-  }
+window.copyLink=async()=>{
+  try { await navigator.clipboard.writeText(window.generatedLink); alert('Link copiado!'); }
+  catch(e) { prompt('Copie o link:',window.generatedLink); }
 };
 
 /* ==========================================
    CONSULTAR PALPITES
    ========================================== */
-
-$('loadPred').onclick = async () => {
-  const rid = $('predRound').value;
-
-  if(!rid) return;
-
-  const {data,error} = await db
-    .from('predictions')
-    .select(`
-      id,
-      participant_id,
-      match_id,
-      home_goals,
-      away_goals,
-      participants(display_name),
-      matches!inner(match_number,home_team,away_team,round_id)
-    `)
-    .eq('matches.round_id',rid)
-    .order('match_id');
-
-  if(error) {
-    $('predictions').textContent = error.message;
-    return;
-  }
-
-  csvRows = data || [];
-
-  $('predictions').innerHTML = csvRows.length
-    ? `<table>
-        <thead>
-          <tr>
-            <th>Participante</th>
-            <th>Jogo</th>
-            <th>Palpite</th>
-            <th>Salvar</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${csvRows.map(p=>`
-            <tr>
-              <td>${esc(p.participants?.display_name)}</td>
-              <td>
-                ${esc(p.matches?.home_team)}
-                ×
-                ${esc(p.matches?.away_team)}
-              </td>
-              <td>
-                <div style="display:flex;gap:5px">
-                  <input
-                    style="width:55px"
-                    type="number"
-                    min="0"
-                    max="99"
-                    id="ph_${p.id}"
-                    value="${p.home_goals}"
-                  >
-                  <input
-                    style="width:55px"
-                    type="number"
-                    min="0"
-                    max="99"
-                    id="pa_${p.id}"
-                    value="${p.away_goals}"
-                  >
-                </div>
-              </td>
-              <td>
-                <button onclick="savePrediction('${p.id}')">Salvar</button>
-              </td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>`
-    : '<p class="muted">Ainda não há palpites enviados nesta rodada.</p>';
+$('loadPred').onclick=async()=>{
+  const rid=$('predRound').value; if(!rid) return;
+  const {data,error}=await db.from('predictions').select(`id,participant_id,match_id,home_goals,away_goals,participants(display_name),matches!inner(match_number,home_team,away_team,round_id)`).eq('matches.round_id',rid).order('match_id');
+  if(error) { $('predictions').textContent=error.message; return; }
+  csvRows=data||[];
+  $('predictions').innerHTML=csvRows.length?`<table><thead><tr><th>Participante</th><th>Jogo</th><th>Palpite</th><th>Salvar</th></tr></thead><tbody>
+    ${csvRows.map(p=>`<tr><td>${esc(p.participants?.display_name)}</td><td>${esc(p.matches?.home_team)} × ${esc(p.matches?.away_team)}</td>
+      <td><div style="display:flex;gap:5px"><input style="width:55px" type="number" min="0" max="99" id="ph_${p.id}" value="${p.home_goals}"><input style="width:55px" type="number" min="0" max="99" id="pa_${p.id}" value="${p.away_goals}"></div></td>
+      <td><button onclick="savePrediction('${p.id}')">Salvar</button></td></tr>`).join('')}
+    </tbody></table>`:'<p class="muted">Ainda não há palpites enviados nesta rodada.</p>';
 };
-
-/* ==========================================
-   EDITAR PALPITE COMO ADMINISTRADOR
-   ========================================== */
-
-window.savePrediction = async (id) => {
-  const h = Number($('ph_'+id).value);
-  const a = Number($('pa_'+id).value);
-
-  if(
-    !Number.isInteger(h) ||
-    !Number.isInteger(a) ||
-    h<0 || a<0 || h>99 || a>99
-  ) {
-    alert('Placar inválido.');
-    return;
-  }
-
-  const {error} = await db
-    .from('predictions')
-    .update({
-      home_goals:h,
-      away_goals:a,
-      updated_at:new Date().toISOString()
-    })
-    .eq('id',id);
-
-  if(error) alert(error.message);
-  else alert('Palpite atualizado!');
+window.savePrediction=async id=>{
+  const h=Number($('ph_'+id).value), a=Number($('pa_'+id).value);
+  if(!Number.isInteger(h)||!Number.isInteger(a)||h<0||a<0||h>99||a>99) { alert('Placar inválido.'); return; }
+  const {error}=await db.from('predictions').update({home_goals:h,away_goals:a,updated_at:new Date().toISOString()}).eq('id',id);
+  if(error) alert(error.message); else alert('Palpite atualizado!');
 };
 
 /* ==========================================
    EXPORTAR PALPITES PARA EXCEL
    ========================================== */
-
-$('exportCsv').onclick = () => {
-  if(!csvRows.length) {
-    alert('Consulte uma rodada com palpites primeiro.');
-    return;
-  }
-
-  const lines = [
-    [
-      'Participante',
-      'Jogo',
-      'Mandante',
-      'Gols mandante',
-      'Visitante',
-      'Gols visitante'
-    ],
-    ...csvRows.map(p=>[
-      p.participants?.display_name,
-      p.matches?.match_number,
-      p.matches?.home_team,
-      p.home_goals,
-      p.matches?.away_team,
-      p.away_goals
-    ])
-  ];
-
-  const csv = '\ufeff' + lines.map(r=>
-    r.map(v=>
-      '"'+String(v??'').replace(/"/g,'""')+'"'
-    ).join(';')
-  ).join('\r\n');
-
-  const blob = new Blob(
-    [csv],
-    {type:'text/csv;charset=utf-8;'}
-  );
-
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'palpites-bolao.csv';
-  a.click();
-
-  URL.revokeObjectURL(a.href);
+$('exportCsv').onclick=()=>{
+  if(!csvRows.length) { alert('Consulte uma rodada com palpites primeiro.'); return; }
+  const lines=[['Participante','Jogo','Mandante','Gols mandante','Visitante','Gols visitante'],...csvRows.map(p=>[p.participants?.display_name,p.matches?.match_number,p.matches?.home_team,p.home_goals,p.matches?.away_team,p.away_goals])];
+  const csv='\ufeff'+lines.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\r\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}), a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download='palpites-bolao.csv'; a.click(); URL.revokeObjectURL(a.href);
 };
 
 /* ==========================================
    ABAS DO PAINEL
    ========================================== */
-
 document.querySelectorAll('.tab').forEach(b=>{
-  b.onclick = () => {
-    document.querySelectorAll('.tab').forEach(x=>
-      x.classList.toggle('active',x===b)
-    );
-
-    ['roundTab','peopleTab','predTab'].forEach(id=>
-      $(id).classList.toggle('hidden',id!==b.dataset.tab)
-    );
+  b.onclick=()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));
+    ['roundTab','peopleTab','predTab','seasonTab','teamsTab'].forEach(id=>$(id).classList.toggle('hidden',id!==b.dataset.tab));
   };
 });
 
 /* ==========================================
    INICIAR
    ========================================== */
-
 matchForm();
 boot();
-
 </script>
 </body>
 </html>
