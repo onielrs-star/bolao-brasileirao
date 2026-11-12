@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Bolão do Brasileirão</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
 <style>
 :root {
   --blue:#123d70; --blue2:#1d5b96; --bg:#f3f6fa; --ink:#182433;
@@ -258,7 +261,11 @@ table { min-width:560px; }
     <h2>Ranking da temporada</h2>
     <p class="muted">A classificação soma os pontos de todas as rodadas da temporada selecionada. Placar exato vale 5 pontos; resultado correto, sem cravar o placar, vale 3; resultado errado vale 0.</p>
     <label>Temporada</label><select id="rankingSeason"></select>
-    <button id="refreshRanking">Atualizar ranking</button>
+    <div class="row">
+      <button id="refreshRanking">Atualizar ranking</button>
+      <button class="secondary" id="exportRankingPdf">Gerar PDF</button>
+      <button class="secondary" id="exportRankingExcel">Exportar Excel</button>
+    </div>
     <div id="rankingSummary" class="ranking-summary"></div>
     <div id="rankingList" class="table-wrap"><p class="muted">Selecione uma temporada e atualize o ranking.</p></div>
     <hr>
@@ -312,6 +319,7 @@ const esc = value => String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<'
 const logoHtml = (url,name) => url ? `<img class="team-logo" src="${esc(url)}" alt="Escudo ${esc(name)}" onerror="this.style.display='none'">` : '';
 let roundsCache = [], csvRows = [], participantRounds = [];
 let seasonsCache = [], teamsCache = [], seasonTeamsCache = [], matchTeamsCache = [];
+let rankingExportRows = [], rankingExportSeason = '', rankingExportStats = {};
 
 /* ==========================================
    FORMULÁRIO DOS DEZ JOGOS
@@ -586,9 +594,12 @@ window.saveOfficialResult=async id=>{
 };
 
 async function loadRanking() {
+  rankingExportRows=[]; rankingExportStats={};
   const seasonId=$('rankingSeason').value;
   if(!seasonId) { $('rankingList').innerHTML='<p class="muted">Cadastre ou selecione uma temporada.</p>'; $('rankingSummary').innerHTML=''; return; }
   $('rankingList').innerHTML='<p class="muted">Calculando classificação...</p>';
+  const selectedSeason=seasonsCache.find(s=>String(s.id)===String(seasonId));
+  rankingExportSeason=selectedSeason?.title || (selectedSeason?.year ? 'Brasileirão '+selectedSeason.year : 'Temporada');
   const seasonRounds=roundsCache.filter(r=>String(r.season_id)===String(seasonId));
   const roundIds=seasonRounds.map(r=>r.id);
   const {data:people,error:peopleError}=await db.from('participants').select('id,display_name,is_active').eq('is_active',true).order('display_name');
@@ -617,11 +628,50 @@ async function loadRanking() {
   let lastKey='',rank=0;
   rows.forEach((r,i)=>{ const key=[r.points,r.exact,r.correct].join('|'); if(key!==lastKey) rank=i+1; r.rank=rank; lastKey=key; });
   const totalMatches=completed.length;
+  rankingExportRows=rows.map(r=>({...r}));
+  rankingExportStats={participants:rows.length,totalMatches,rounds:seasonRounds.length};
   $('rankingSummary').innerHTML=`<div class="ranking-stat"><span class="muted">Participantes</span><strong>${rows.length}</strong></div><div class="ranking-stat"><span class="muted">Jogos com resultado</span><strong>${totalMatches}</strong></div><div class="ranking-stat"><span class="muted">Rodadas na temporada</span><strong>${seasonRounds.length}</strong></div>`;
   $('rankingList').innerHTML=rows.length?`<table class="ranking-table"><thead><tr><th>Posição</th><th>Participante</th><th>Pontos</th><th>Cravadas</th><th>Resultado certo</th><th>Jogos pontuados</th></tr></thead><tbody>
     ${rows.map(r=>`<tr><td class="rank-position">${r.rank}º</td><td>${esc(r.name)}</td><td><b>${r.points}</b></td><td>${r.exact}</td><td>${r.correct}</td><td>${r.played}</td></tr>`).join('')}
     </tbody></table>`:'<p class="muted">Nenhum participante ativo cadastrado.</p>';
 }
+
+/* ==========================================
+   EXPORTAÇÃO DO RANKING — PDF E EXCEL
+   ========================================== */
+function rankingExportReady() {
+  if(!rankingExportRows.length) { alert('Atualize o ranking antes de exportar.'); return false; }
+  return true;
+}
+$('exportRankingPdf').onclick=()=>{
+  if(!rankingExportReady()) return;
+  if(!window.jspdf?.jsPDF) { alert('Não foi possível carregar o gerador de PDF. Verifique sua conexão e atualize a página.'); return; }
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+  const today=new Date().toLocaleDateString('pt-BR');
+  doc.setFont('helvetica','bold'); doc.setFontSize(18); doc.text('BOLÃO DO BRASILEIRÃO',14,16);
+  doc.setFontSize(13); doc.text('Ranking — '+rankingExportSeason,14,24);
+  doc.setFont('helvetica','normal'); doc.setFontSize(9);
+  doc.text('Atualizado em '+today+' | Participantes: '+rankingExportStats.participants+' | Jogos com resultado: '+rankingExportStats.totalMatches+' | Rodadas: '+rankingExportStats.rounds,14,31);
+  doc.autoTable({startY:37,head:[['Posição','Participante','Pontos','Cravadas','Resultados corretos','Jogos pontuados']],body:rankingExportRows.map(r=>[r.rank+'º',r.name,r.points,r.exact,r.correct,r.played]),
+    styles:{font:'helvetica',fontSize:10,cellPadding:3},headStyles:{fillColor:[29,91,150],textColor:255},alternateRowStyles:{fillColor:[243,246,250]},
+    columnStyles:{0:{cellWidth:22},1:{cellWidth:100},2:{cellWidth:25},3:{cellWidth:25},4:{cellWidth:42},5:{cellWidth:35}}});
+  const pages=doc.internal.getNumberOfPages();
+  for(let i=1;i<=pages;i++){doc.setPage(i);doc.setFontSize(8);doc.setTextColor(110);doc.text('Pontuação: placar exato = 5 pontos | resultado correto = 3 pontos | resultado errado = 0 ponto',14,doc.internal.pageSize.getHeight()-8);doc.text('Página '+i+' de '+pages,doc.internal.pageSize.getWidth()-14,doc.internal.pageSize.getHeight()-8,{align:'right'});}
+  doc.save('ranking-'+rankingExportSeason.toLowerCase().replace(/[^a-z0-9]+/g,'-')+'.pdf');
+};
+$('exportRankingExcel').onclick=()=>{
+  if(!rankingExportReady()) return;
+  if(!window.XLSX) { alert('Não foi possível carregar o gerador de Excel. Verifique sua conexão e atualize a página.'); return; }
+  const today=new Date().toLocaleDateString('pt-BR');
+  const data=[['Posição','Participante','Pontos','Cravadas','Resultados corretos','Jogos pontuados'],...rankingExportRows.map(r=>[r.rank,r.name,r.points,r.exact,r.correct,r.played])];
+  const ws=XLSX.utils.aoa_to_sheet(data);
+  ws['!cols']=[{wch:12},{wch:32},{wch:12},{wch:12},{wch:22},{wch:20}];
+  const summary=XLSX.utils.aoa_to_sheet([['BOLÃO DO BRASILEIRÃO'],['Ranking',rankingExportSeason],['Atualizado em',today],['Participantes',rankingExportStats.participants],['Jogos com resultado',rankingExportStats.totalMatches],['Rodadas na temporada',rankingExportStats.rounds],[],['Regras de pontuação'],['Placar exato',5],['Resultado correto (sem cravar)',3],['Resultado errado',0]]);
+  summary['!cols']=[{wch:32},{wch:28}];
+  const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Ranking'); XLSX.utils.book_append_sheet(wb,summary,'Resumo');
+  XLSX.writeFile(wb,'ranking-'+rankingExportSeason.toLowerCase().replace(/[^a-z0-9]+/g,'-')+'.xlsx');
+};
 
 /* ==========================================
    AUTORIZAÇÃO DO ADMINISTRADOR
