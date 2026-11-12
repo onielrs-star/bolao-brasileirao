@@ -371,6 +371,7 @@ async function loadRounds() {
         <button class="secondary" onclick="setRoundStatus('${r.id}','open')">Abrir</button>
         <button class="secondary" onclick="setRoundStatus('${r.id}','closed')">Fechar</button>
         <button class="secondary" onclick="setRoundStatus('${r.id}','finished')">Finalizar</button>
+        <button class="danger" onclick="deleteRound('${r.id}')">Excluir</button>
       </div>
     `).join('')
     : '<p class="muted">Nenhuma rodada cadastrada.</p>';
@@ -384,6 +385,39 @@ window.setRoundStatus = async (id,status) => {
 
   if(error) alert(error.message);
   else await loadRounds();
+};
+
+/* ==========================================
+   EXCLUIR RODADA
+   ========================================== */
+
+window.deleteRound = async (id) => {
+  const round = roundsCache.find(r=>r.id===id);
+  const title = round?.title || 'esta rodada';
+
+  const confirmed = confirm(
+    `Tem certeza de que deseja excluir "${title}"?\n\n` +
+    'Esta ação também apagará os jogos e todos os palpites desta rodada. ' +
+    'A exclusão é permanente e não poderá ser desfeita.'
+  );
+
+  if(!confirmed) return;
+
+  const {error} = await db.rpc('delete_round',{
+    p_round_id:id
+  });
+
+  if(error) {
+    alert('Não foi possível excluir a rodada: '+error.message);
+    return;
+  }
+
+  csvRows = [];
+  $('predictions').innerHTML = '';
+
+  alert('Rodada excluída com sucesso!');
+
+  await loadRounds();
 };
 
 /* ==========================================
@@ -420,6 +454,10 @@ async function loadPeople() {
                   onclick="togglePerson('${p.id}',${!p.is_active})">
                   ${p.is_active?'Desativar':'Ativar'}
                 </button>
+                <button
+                  onclick="regeneratePersonLink('${p.id}')">
+                  Gerar novo link
+                </button>
               </td>
             </tr>
           `).join('')}
@@ -436,6 +474,49 @@ window.togglePerson = async (id,active) => {
 
   if(error) alert(error.message);
   else await loadPeople();
+};
+
+/* ==========================================
+   GERAR NOVO LINK DO PARTICIPANTE
+   ========================================== */
+
+window.regeneratePersonLink = async (id) => {
+  const confirmed = confirm(
+    'Deseja gerar um novo link para este participante?\n\n' +
+    'O link anterior deixará de funcionar imediatamente.'
+  );
+
+  if(!confirmed) return;
+
+  const {data,error} = await db.rpc(
+    'regenerate_participant_link',
+    {p_participant_id:id}
+  );
+
+  if(error) {
+    alert('Não foi possível gerar o novo link: '+error.message);
+    return;
+  }
+
+  const link =
+    location.origin +
+    location.pathname +
+    '?token=' +
+    encodeURIComponent(data);
+
+  try {
+    await navigator.clipboard.writeText(link);
+
+    alert(
+      'Novo link gerado e copiado com sucesso!\n\n' +
+      'Envie o novo link ao participante. O anterior não funciona mais.'
+    );
+  } catch(e) {
+    prompt(
+      'Novo link gerado. Copie e envie ao participante:',
+      link
+    );
+  }
 };
 
 /* ==========================================
@@ -958,4 +1039,3 @@ boot();
 </script>
 </body>
 </html>
-
